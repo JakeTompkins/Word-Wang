@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180520084339) do
+ActiveRecord::Schema.define(version: 20180520084809) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "characters", force: :cascade do |t|
+    t.string "hanzi"
+    t.string "pinyin"
+    t.string "definition"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -32,4 +40,34 @@ ActiveRecord::Schema.define(version: 20180520084339) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "vocabulary_entries", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "word_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_vocabulary_entries_on_user_id"
+    t.index ["word_id"], name: "index_vocabulary_entries_on_word_id"
+  end
+
+  create_table "word_characters", force: :cascade do |t|
+    t.bigint "word_id"
+    t.bigint "character_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_word_characters_on_character_id"
+    t.index ["word_id"], name: "index_word_characters_on_word_id"
+  end
+
+  create_table "words", force: :cascade do |t|
+    t.string "hanzi"
+    t.string "pinyin"
+    t.string "definition"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_foreign_key "vocabulary_entries", "users"
+  add_foreign_key "vocabulary_entries", "words"
+  add_foreign_key "word_characters", "characters"
+  add_foreign_key "word_characters", "words"
 end
